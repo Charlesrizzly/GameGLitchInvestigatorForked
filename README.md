@@ -25,9 +25,18 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📝 Document Your Experience
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] Describe the game's purpose.
+   - The app is a Streamlit-based Number Guessing Game. The player tries to guess a secret integer (typically 1–100). After each guess the app gives a hint — "Higher" or "Lower" — until the player finds the secret number.
+
+- [x] Detail which bugs you found.
+   - The secret number reset on every interaction because it was reinitialized on each Streamlit rerun instead of being persisted in `st.session_state`.
+   - The hint logic was incorrect (comparisons were reversed), causing the app to tell the player the wrong direction.
+   - Attempt/count state wasn't preserved across reruns, making progress tracking unreliable.
+
+- [x] Explain what fixes you applied.
+   - Persisted the secret number and attempt counter using `st.session_state` so values survive button clicks and reruns.
+   - Corrected the comparison logic so the app displays "Higher" when the guess is less than the secret and "Lower" when the guess is greater than the secret.
+   - Refactored core game logic into `logic_utils.py` (pure functions for checking guesses and generating hints) and added unit tests in `tests/` to verify behavior. After these changes the tests pass with `pytest`.
 
 ## 📸 Demo
 

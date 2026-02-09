@@ -70,7 +70,7 @@ with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
 if new_game:
-    # FIXME: Logic breaks here
+    #FIX: changed logic to accurately record scoring using Copilot Ask mode
     st.session_state.attempts = 0
     st.session_state.score = 0
     st.session_state.status = "playing"

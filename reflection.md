@@ -14,8 +14,6 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
   (for example: "the secret number kept changing" or "the hints were backwards").
   - Expected: Accurate hint based on answer submitted
     Actual:The hint given is not accurate for all difficulties
-  - Expected: Game renews when the renew button is clicked
-    Actual:Once you win or lose the game and want to start a new game it changes the all the info in the debugger but you can't submit a new guess and the "You already won. Start a new game to play again." or "Out of attempts! The secret was ... Score: ..." doesn't dissappear
   - Expected:Scoring should be properly logged
     Actual:The final score doesn’t reflect the debugger info
 
@@ -27,8 +25,24 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Which AI tools did you use on this project (for example: ChatGPT, Gemini, Copilot)?
   - Copilot
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
+ - me: there's an issue withthe scoring for this game. when the game has ended(number of attempts have been used up or secret number has been guessed) the score shown to the player doesn't match that in the debugger
+ -AI: I found the issue! The problem is in the "New Game" button logic.
+
+When you click "New Game", the code resets attempts and secret, but it doesn't reset the score. This means the score persists from the previous game, but the debugger shows the accumulated score while the success/error messages display only the current game's score.
+
+Here's the fix:
+
+  if new_game:
+    st.session_state.attempts = 0
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
+    st.session_state.secret = random.randint(low, high)
+    st.success("New game started.")
+    st.rerun()
+
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
- - I told the Agentic AI to refactor only the check_guess logic from the file app.py to logic_utils.py but it seemed to try and do the other logics and in the process it didn't complete the process. It removed the other logics from app.py but never refactored them to logic_utils.py
+ - I told the Agentic AI to refactor only the check_guess logic from the file `app.py` to `logic_utils.py` but it seemed to try and do the other logics and in the process it didn't complete the process. It removed the other logics from `app.py` but never refactored them to `logic_utils.py`
 ---
 
 ## 3. Debugging and testing your fixes
@@ -37,7 +51,12 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
   - I would: 1. reload and test the local instance of the app. 2. Run the unit test created for the feature
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
+  - I tested all features I updated manually. I updated the 1 pytest for the Hints: High vs Low and ran it. this was the outcome:
+   python -m pytest -q tests/test_game_logic.py
+   .....................                                                                                                                           [100%]
+   21 passed in 0.03s
 - Did AI help you design or understand any tests? How?
+  - Yes, I used AI to update the tests within the `test_game_logic.py` file to accomodate the changes made in the `logic_utils.py`
 
 ---
 
@@ -58,6 +77,7 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
   - This could be a testing habit, a prompting strategy, or a way you used Git.
     - I gained a prompting strtegy which is to tell the AI to describe the functions of all the functions first so it's easier to locate where errors could come from
 - What is one thing you would do differently next time you work with AI on a coding task?
+  - I'll try to be more specific and give it as much context as possible
  
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
   - I no longer see AI generated code as the final solution, but as a draft  
